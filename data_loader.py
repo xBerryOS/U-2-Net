@@ -149,7 +149,7 @@ class ToTensorLab:
         return {
             "imidx": torch.from_numpy(imidx),
             "image": torch.from_numpy(tmp_img),
-            "label": torch.from_numpy(tmp_lbl),
+            "label": torch.from_numpy(tmp_lbl.copy()),
         }
 
 

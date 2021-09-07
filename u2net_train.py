@@ -11,6 +11,8 @@ from torchvision import transforms
 import torch.optim as optim
 import os
 
+from tqdm.auto import tqdm
+
 from data_loader import RescaleT, HorizontalFlip, RandomColorJitter, GaussianBlur
 from data_loader import RandomCrop
 from data_loader import ToTensorLab
@@ -114,10 +116,9 @@ salobj_dataloader = DataLoader(
 net = U2NET_full()
 
 net.load_state_dict(torch.load(
-    TRAINED_MODELS_PATH / "u2net" / "u2net.pt"),
-    "gpu" if USE_CUDA and torch.cuda.is_available() else "cpu"
-)
-
+    TRAINED_MODELS_PATH / "u2net" / "u2net.pth",
+    torch.device("cuda" if USE_CUDA and torch.cuda.is_available() else "cpu")
+))
 
 if USE_CUDA and torch.cuda.is_available():
     net.cuda()
@@ -130,7 +131,7 @@ training_start_time = datetime.datetime.now()
 os.makedirs(TRAINED_MODELS_PATH / str(training_start_time), exist_ok=True)
 save_frequency = 10
 
-for epoch in range(0, epoch_num):
+for epoch in tqdm(range(0, epoch_num)):
     net.train()
     epoch_loss = []
 
@@ -161,6 +162,7 @@ for epoch in range(0, epoch_num):
                 "model": net.state_dict(),
                 "optimizer": optimizer.state_dict(),
             },
-            TRAINED_MODELS_PATH / str(training_start_time) / f"u2net_{epoch}_{np.mean(epoch_loss)}.pth"
+            TRAINED_MODELS_PATH / str(
+                training_start_time) / f"u2net_{epoch}_{np.mean(epoch_loss)}.pth"
         )
     writer.add_scalar("training loss", np.mean(epoch_loss), epoch)
