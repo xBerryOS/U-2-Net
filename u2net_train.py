@@ -58,7 +58,7 @@ writer = SummaryWriter()
 
 model_name = "u2net"
 
-data_dir = "/home/piotr/Downloads/carcutter_dataset/"
+data_dir = "/home/piotr/Projects/PixelguruDownloader/interior/"
 tra_image_dir = os.path.join("train" + os.sep)
 tra_label_dir = os.path.join("train_masks" + os.sep)
 
